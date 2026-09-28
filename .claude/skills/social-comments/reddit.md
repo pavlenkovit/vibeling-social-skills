@@ -387,6 +387,60 @@ node scripts/reddit/rscan.mjs mine
 
 ---
 
+## Журнал: `content/reddit-log.json`
+
+```json
+{
+  "meta": { "purpose": "...", "rules_digest": { "...": "краткая выжимка правил" } },
+  "account": {
+    "username": "pavlenkovit",
+    "total_karma": 1098,
+    "created": "2022-07-16T13:33:38.000Z",
+    "links_allowed": true,
+    "checked_at": "2026-09-09T10:31:00Z",
+    "note": ""
+  },
+  "comments": [
+    {
+      "id": "pcadcxx",
+      "sub": "microsaas",
+      "thread_title": "Anyone here actually living off their micro SaaS?",
+      "thread_url": "https://www.reddit.com/r/microsaas/comments/1wr1dmu/",
+      "text": "...",
+      "posted_at": "2026-09-27T01:59:23Z",
+      "mentions_vibeling": false,
+      "has_link": false,
+      "reply_to": null,
+      "checks": [{ "at": "", "score": 0, "replies": 0 }],
+      "status": "live",
+      "note": ""
+    }
+  ],
+  "skipped": [
+    { "at": "", "subreddit": "", "thread": "", "reason": "" }
+  ],
+  "bans": [
+    { "sub": "", "discovered_at": "", "how": "", "modmail": "", "scope": "", "cause": "" }
+  ]
+}
+```
+
+- `id` — id комментария из `rscan.mjs mine`; `reply_to` — ник, если это ответ в
+  ветке (такие не входят в дневной лимит и пропорцию), иначе `null`.
+- `status`: `live` | `deleted` (удалили сами) | `removed_by_mod` | `filtered`
+  (съел спам-фильтр).
+- `checks` дописывается при каждой проверке старого (шаг 6), не перезаписывается.
+- `skipped` — треды, которые выбрали, но не стали комментировать, с причиной: бан,
+  уже ответили, риск обвинения в ИИ. Чтобы не выбирать их снова.
+- `bans` — где и как обнаружен бан; сабы оттуда в работу не возвращаются.
+- `account` обновляется в начале сессии по `rscan.mjs me`: от кармы и возраста
+  зависит, можно ли ставить ссылки (`links_allowed`, порог — в «Ссылки»).
+
+В старых записях встречаются `subreddit`/`permalink` вместо `sub`/`thread_url` —
+новые пишем по схеме выше.
+
+---
+
 ## История: что мы узнали про посты, пока их писали
 
 Постов мы больше не публикуем, но наблюдения стоили дня работы и пригодятся, если
